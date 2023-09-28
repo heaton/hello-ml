@@ -3,16 +3,23 @@ import math
 import numpy as np
 
 
-def compute_cost(x, y, w, b):
-    m = x.shape[0]
+def compute_cost(x, y, w, b, lambda_=1):
+    m,n = x.shape
     cost = 0.0
     for i in range(m):
         f_wb_i = np.dot(x[i], w) + b
         cost = cost + (f_wb_i - y[i])**2
-    return cost / (2 * m)
+    cost = cost / (2 * m)
+
+    reg_cost = 0
+    for j in range(n):
+        reg_cost += (w[j]**2)
+    reg_cost = (lambda_/(2*m)) * reg_cost
+
+    return cost + reg_cost
 
 
-def compute_gradient(x, y, w, b):
+def compute_gradient(x, y, w, b, lambda_=1):
     m, n = x.shape
     dj_dw = np.zeros((n,))
     dj_db = 0.
@@ -24,6 +31,10 @@ def compute_gradient(x, y, w, b):
         dj_db = dj_db + err
     dj_dw = dj_dw / m
     dj_db = dj_db / m
+
+    # Regularization
+    for j in range(n):
+        dj_dw[j] = dj_dw[j] + (lambda_/m) * w[j]
 
     return dj_dw, dj_db
 
@@ -60,11 +71,15 @@ w_init = np.array([0.4, 18., -53., -26.])
 b_init = 700
 
 print("===========run gradient descent==============")
+
+
 def run_gradient_descent(features, alpha, iterations):
     return gradient_descent(features, targets, w_init, b_init, alpha,
-                                            iterations, compute_cost, compute_gradient)
+                            iterations, compute_cost, compute_gradient)
 
-w_final, b_final, J_hist = run_gradient_descent(features, alpha = 5.0e-7, iterations=10000)
+
+w_final, b_final, J_hist = run_gradient_descent(
+    features, alpha=5.0e-7, iterations=10000)
 
 print(f"(w,b) found by gradient descent: ({w_final}, {b_final:1.4f});",
       f"final cost: {J_hist[-1]}")
@@ -77,9 +92,11 @@ def zscore_normalize_features(x):
 
     return (x_norm, mu, sigma)
 
+
 print("===========run gradient descent with nomalization==============")
 x_norm, mu, sigma = zscore_normalize_features(features)
-w_norm, b_norm, J_hist = run_gradient_descent(x_norm, alpha=1e-1, iterations=1000)
+w_norm, b_norm, J_hist = run_gradient_descent(
+    x_norm, alpha=1e-1, iterations=1000)
 
 print(f"(w,b) found by gradient descent: ({w_norm},{b_norm:1.4f});",
       f"final cost: {J_hist[-1]}")
