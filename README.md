@@ -26,4 +26,5 @@ python3 derivatives.py
 
 ```sh
 python3 k-means.py
+python3 anomaly.py
 ```
