@@ -4,10 +4,7 @@
 
 ```sh
 brew install python3
-pip3 install numpy
-pip3 install scikit-learn
-pip3 install matplotlib
-pip3 install sympy
+pip3 install numpy scikit-learn matplotlib sympy tensorflow pandas tabulate pickle5
 ```
 
 ### Run the code
@@ -27,4 +24,5 @@ python3 derivatives.py
 ```sh
 python3 k-means.py
 python3 anomaly.py
+python3 collaborative-filtering.py
 ```
